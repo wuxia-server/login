@@ -21,13 +21,12 @@ func main() {
 			modules.DataBaseSetConf(conf.MySql),
 		)
 		app.AddModule(Control.DbModule)
+
+		// 载入HTTP服务模块
+		app.AddModule(modules.NewHttpModule(
+			modules.HttpSetRoute(HttpRoute.Route),
+		))
 	})
 	Control.App.Init()
-
-	Control.App.Run(
-		modules.NewHttpModule(
-			modules.HttpSetRoute(HttpRoute.Route),
-		),
-		modules.NewWebSocketModule(),
-	)
+	Control.App.Run()
 }
