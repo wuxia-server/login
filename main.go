@@ -13,7 +13,7 @@ func main() {
 	Control.App = framework.CreateApp(
 		modules.AppSetDebug(true),
 		modules.AppSetParse(true),
-		modules.AppSetPStatusTime(3*time.Second),
+		modules.AppSetPStatusTime(60*time.Second),
 	)
 	Control.App.OnConfigurationLoaded(func(app modules.IApp, conf *config.AppConfig) {
 		// 载入数据库模块
@@ -24,6 +24,7 @@ func main() {
 
 		// 载入HTTP服务模块
 		app.AddModule(modules.NewHttpModule(
+			modules.HttpSetIpPort(":20300"),
 			modules.HttpSetRoute(HttpRoute.Route),
 		))
 	})

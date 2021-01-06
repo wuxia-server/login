@@ -33,17 +33,17 @@ func (e *TokenLoginEvent) HttpDirectCall(req *http.Request, resp *messages.HttpR
 	logger.Debug("Token登录成功")
 
 	// 账户信息
-	resp.Data["Account"] = account.ToJsonMap()
+	resp.Data["account"] = account.ToJsonMap()
 
 	// 默认选中的服务器
 	serverList := Data.GetServerList()
 	if account.LatelyServer == "" {
-		resp.Data["Server"] = serverList[0].ToJsonMap()
+		resp.Data["server"] = serverList[0].ToJsonMap()
 	} else {
 		serverId := strings.Split(account.LatelyServer, ",")[0]
 		for _, server := range serverList {
 			if string(server.Id) == serverId {
-				resp.Data["Server"] = serverList[0].ToJsonMap()
+				resp.Data["server"] = serverList[0].ToJsonMap()
 				break
 			}
 		}
