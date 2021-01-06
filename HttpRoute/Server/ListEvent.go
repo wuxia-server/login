@@ -62,7 +62,6 @@ func (e *ListEvent) HttpDirectCall(req *http.Request, resp *messages.HttpRespons
 	}
 
 	resp.Code = messages.RC_Success
-	return
 }
 
 func M_List() *ListEvent {

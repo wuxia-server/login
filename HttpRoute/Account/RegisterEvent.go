@@ -63,7 +63,6 @@ func (e *RegisterEvent) HttpDirectCall(req *http.Request, resp *messages.HttpRes
 
 	logger.Debug("注册成功")
 	resp.Code = messages.RC_Success
-	return
 }
 
 func M_Register() *RegisterEvent {

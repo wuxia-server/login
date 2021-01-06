@@ -65,7 +65,6 @@ func (e *PasswordLoginEvent) HttpDirectCall(req *http.Request, resp *messages.Ht
 		}
 	}
 	resp.Code = messages.RC_Success
-	return
 }
 
 func M_PasswordLogin() *PasswordLoginEvent {

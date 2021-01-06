@@ -52,7 +52,6 @@ func (e *SelectEvent) HttpDirectCall(req *http.Request, resp *messages.HttpRespo
 	resp.Data["host"] = server.Host
 	resp.Data["port"] = server.Port
 	resp.Code = messages.RC_Success
-	return
 }
 
 func M_Select() *SelectEvent {
