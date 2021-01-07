@@ -9,7 +9,7 @@ import (
 func GetServerList() (serverList []*Table.Server) {
 	serverList = make([]*Table.Server, 0)
 	sqlstr := dal.MarshalGetSql(Table.NewServer())
-	rows, err := Control.DbModule.Query(sqlstr)
+	rows, err := Control.GateDB.Query(sqlstr)
 	defer rows.Close()
 	if err == nil {
 		for rows.Next() {
@@ -31,7 +31,7 @@ func GetServerList() (serverList []*Table.Server) {
 func GetServerById(serverId int64) (server *Table.Server) {
 	server = Table.NewServer()
 	sqlstr := dal.MarshalGetSql(server, "id")
-	row := Control.DbModule.QueryRow(sqlstr, serverId)
+	row := Control.GateDB.QueryRow(sqlstr, serverId)
 	if row.Scan(
 		&server.Id,
 		&server.Title,

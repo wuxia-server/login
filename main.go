@@ -16,11 +16,14 @@ func main() {
 		modules.AppSetPStatusTime(60*time.Second),
 	)
 	Control.App.OnConfigurationLoaded(func(app modules.IApp, conf *config.AppConfig) {
-		// 载入数据库模块
-		Control.DbModule = modules.NewDataBaseModule(
-			modules.DataBaseSetConf(conf.MySql),
-		)
-		app.AddModule(Control.DbModule)
+		// 载入数据库模块(账户服)
+		if item := conf.Settings["gate_db"]; item != nil {
+			settings := item.(map[string]interface{})
+			Control.GateDB = modules.NewDataBaseModule(
+				modules.DataBaseSetDsn(settings["dsn"].(string)),
+			)
+			app.AddModule(Control.GateDB)
+		}
 
 		// 载入HTTP服务模块
 		app.AddModule(modules.NewHttpModule(

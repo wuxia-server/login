@@ -14,7 +14,7 @@ import (
 func GetAccountByToken(token string) (account *Table.Account) {
 	account = Table.NewAccount()
 	sqlstr := dal.MarshalGetSql(account, "token")
-	row := Control.DbModule.QueryRow(sqlstr, token)
+	row := Control.GateDB.QueryRow(sqlstr, token)
 	if row.Scan(
 		&account.Id,
 		&account.UserName,
@@ -34,7 +34,7 @@ func GetAccountByToken(token string) (account *Table.Account) {
 func GetAccountByUserName(userName string) (account *Table.Account) {
 	account = Table.NewAccount()
 	sqlstr := dal.MarshalGetSql(account, "username")
-	row := Control.DbModule.QueryRow(sqlstr, userName)
+	row := Control.GateDB.QueryRow(sqlstr, userName)
 	if row.Scan(
 		&account.Id,
 		&account.UserName,
@@ -55,7 +55,7 @@ func RefreshAccountToken(account *Table.Account) bool {
 	token, ok := GenerateToken()
 	if ok {
 		sqlstr := `update account set token = ? where username = ?;`
-		_, err := Control.DbModule.Exec(sqlstr, token, account.UserName)
+		_, err := Control.GateDB.Exec(sqlstr, token, account.UserName)
 		if err == nil {
 			account.Token = token
 			return true
@@ -66,7 +66,7 @@ func RefreshAccountToken(account *Table.Account) bool {
 
 func RegisterAccount(account *Table.Account) (err error) {
 	sqlstr := `insert into account(id, username, password, email, phone, token, status, lately_server, create_time) values (?, ?, ?, ?, ?, ?, ?, ?, ?);`
-	_, err = Control.DbModule.Exec(sqlstr,
+	_, err = Control.GateDB.Exec(sqlstr,
 		account.Id,
 		account.UserName,
 		account.PassWord,
@@ -90,7 +90,7 @@ func GenerateAccountId() (accountId int64, ok bool) {
 		}
 		accountId = rand.Int63n(8999999) + 1000000 // 随机生成一个七位数ID
 		sqlstr := `select username from Account where id = ?;`
-		row := Control.DbModule.QueryRow(sqlstr, accountId)
+		row := Control.GateDB.QueryRow(sqlstr, accountId)
 		username := ""
 		if row.Scan(&username) != nil {
 			break
@@ -112,7 +112,7 @@ func GenerateToken() (token string, ok bool) {
 		h.Write([]byte(uuid.NewV1().String()))
 		token = hex.EncodeToString(h.Sum(nil))
 		sqlstr := `select id from Account where token = ?;`
-		row := Control.DbModule.QueryRow(sqlstr, token)
+		row := Control.GateDB.QueryRow(sqlstr, token)
 		id := 0
 		if row.Scan(&id) != nil {
 			break
