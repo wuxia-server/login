@@ -1,10 +1,10 @@
-package HttpRoute
+package Routes
 
 import (
 	"github.com/team-zf/framework/Network"
 	"github.com/wuxia-server/login/Cmd"
-	"github.com/wuxia-server/login/HttpRoute/Account"
-	"github.com/wuxia-server/login/HttpRoute/Server"
+	"github.com/wuxia-server/login/Routes/Account"
+	"github.com/wuxia-server/login/Routes/Server"
 )
 
 var (

@@ -30,8 +30,6 @@ func (e *TokenLoginEvent) Handle(req *http.Request) uint32 {
 		return Code.Account_TokenLogin_TokenIncorrect
 	}
 
-	logger.Debug("Token登录成功")
-
 	// 账户信息
 	e.Data("account", account.ToJsonMap())
 

@@ -7,7 +7,7 @@ import (
 	"github.com/team-zf/framework/config"
 	"github.com/team-zf/framework/modules"
 	"github.com/wuxia-server/login/Control"
-	"github.com/wuxia-server/login/HttpRoute"
+	"github.com/wuxia-server/login/Routes"
 	"time"
 )
 
@@ -32,7 +32,7 @@ func main() {
 		app.AddModule(Network.NewHttpModule(
 			Network.HttpSetName("账户服"),
 			Network.HttpSetIpPort(":20300"),
-			Network.HttpSetRoute(HttpRoute.Route),
+			Network.HttpSetRoute(Routes.Route),
 		))
 	})
 	Control.App.Init()

@@ -59,6 +59,5 @@ func (e *RegisterEvent) Handle(req *http.Request) uint32 {
 		panic(err)
 	}
 
-	logger.Debug("注册成功")
 	return messages.RC_Success
 }

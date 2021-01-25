@@ -44,8 +44,6 @@ func (e *PasswordLoginEvent) Handle(req *http.Request) uint32 {
 		return Code.Account_PasswordLogin_RefreshTokenFail
 	}
 
-	logger.Debug("登录成功, Token更新为: %s", account.Token)
-
 	// 账户信息
 	e.Data("account", account.ToJsonMap())
 

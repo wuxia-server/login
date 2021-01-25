@@ -6,6 +6,7 @@ import (
 	"github.com/team-zf/framework/messages"
 	"github.com/team-zf/framework/utils"
 	"github.com/wuxia-server/login/Code"
+	"github.com/wuxia-server/login/Control"
 	"github.com/wuxia-server/login/Data"
 	"net/http"
 )
@@ -45,7 +46,9 @@ func (e *SelectEvent) Handle(req *http.Request) uint32 {
 		return Code.Server_Select_NotExists
 	}
 
-	logger.Debug("请及时连接逻辑服.")
+	if Control.App.Debug() {
+		server.Host = "127.0.0.1"
+	}
 
 	e.Data("host", server.Host)
 	e.Data("port", server.Port)
