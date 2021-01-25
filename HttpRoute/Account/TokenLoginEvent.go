@@ -1,17 +1,18 @@
 package Account
 
 import (
+	"github.com/team-zf/framework/Network"
 	"github.com/team-zf/framework/logger"
 	"github.com/team-zf/framework/messages"
 	"github.com/team-zf/framework/utils"
+	"github.com/wuxia-server/login/Code"
 	"github.com/wuxia-server/login/Data"
-	"github.com/wuxia-server/login/HttpRoute/Code"
 	"net/http"
 	"strings"
 )
 
 type TokenLoginEvent struct {
-	messages.HttpMessage
+	Network.HttpRoute
 
 	Token string // Token值
 }
@@ -20,37 +21,32 @@ func (e *TokenLoginEvent) Parse() {
 	e.Token = utils.NewStringAny(e.Params["token"]).ToString()
 }
 
-func (e *TokenLoginEvent) HttpDirectCall(req *http.Request, resp *messages.HttpResponse) {
+func (e *TokenLoginEvent) Handle(req *http.Request) uint32 {
 	account := Data.GetAccountByToken(e.Token)
 
 	// Token错误
 	if account == nil {
 		logger.Debug("Token错误")
-		resp.Code = Code.Account_TokenLogin_TokenIncorrect
-		return
+		return Code.Account_TokenLogin_TokenIncorrect
 	}
 
 	logger.Debug("Token登录成功")
 
 	// 账户信息
-	resp.Data["account"] = account.ToJsonMap()
+	e.Data("account", account.ToJsonMap())
 
 	// 默认选中的服务器
 	serverList := Data.GetServerList()
 	if account.LatelyServer == "" {
-		resp.Data["server"] = serverList[0].ToJsonMap()
+		e.Data("server", serverList[0].ToJsonMap())
 	} else {
 		serverId := strings.Split(account.LatelyServer, ",")[0]
 		for _, server := range serverList {
 			if string(server.Id) == serverId {
-				resp.Data["server"] = serverList[0].ToJsonMap()
+				e.Data("server", serverList[0].ToJsonMap())
 				break
 			}
 		}
 	}
-	resp.Code = messages.RC_Success
-}
-
-func M_TokenLogin() *TokenLoginEvent {
-	return &TokenLoginEvent{}
+	return messages.RC_Success
 }

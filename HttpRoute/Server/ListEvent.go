@@ -1,18 +1,19 @@
 package Server
 
 import (
+	"github.com/team-zf/framework/Network"
 	"github.com/team-zf/framework/logger"
 	"github.com/team-zf/framework/messages"
 	"github.com/team-zf/framework/utils"
+	"github.com/wuxia-server/login/Code"
 	"github.com/wuxia-server/login/Data"
-	"github.com/wuxia-server/login/HttpRoute/Code"
-	"github.com/wuxia-server/login/Table"
+	"github.com/wuxia-server/login/DataTable"
 	"net/http"
 	"strings"
 )
 
 type ListEvent struct {
-	messages.HttpMessage
+	Network.HttpRoute
 
 	Token string // Token值
 }
@@ -21,20 +22,19 @@ func (e *ListEvent) Parse() {
 	e.Token = utils.NewStringAny(e.Params["token"]).ToString()
 }
 
-func (e *ListEvent) HttpDirectCall(req *http.Request, resp *messages.HttpResponse) {
+func (e *ListEvent) Handle(req *http.Request) uint32 {
 	account := Data.GetAccountByToken(e.Token)
 
 	// Token错误
 	if account == nil {
 		logger.Debug("Token错误")
-		resp.Code = Code.Server_List_TokenIncorrect
-		return
+		return Code.Server_List_TokenIncorrect
 	}
 
 	serverList := Data.GetServerList()
 	serverIds := strings.Split(account.LatelyServer, ",")
 
-	latelyList := make([]*Table.Server, 0)
+	latelyList := make([]*DataTable.Server, 0)
 	for _, sid := range serverIds {
 		for _, server := range serverList {
 			if string(server.Id) == sid {
@@ -50,7 +50,7 @@ func (e *ListEvent) HttpDirectCall(req *http.Request, resp *messages.HttpRespons
 		for _, item := range latelyList {
 			mlist = append(mlist, item.ToJsonMap())
 		}
-		resp.Data["lately"] = mlist
+		e.Data("lately", mlist)
 	}
 	// 所有服务器列表
 	if len(serverList) > 0 {
@@ -58,12 +58,8 @@ func (e *ListEvent) HttpDirectCall(req *http.Request, resp *messages.HttpRespons
 		for _, item := range serverList {
 			mlist = append(mlist, item.ToJsonMap())
 		}
-		resp.Data["list"] = mlist
+		e.Data("list", mlist)
 	}
 
-	resp.Code = messages.RC_Success
-}
-
-func M_List() *ListEvent {
-	return &ListEvent{}
+	return messages.RC_Success
 }

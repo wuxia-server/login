@@ -1,7 +1,7 @@
 package Code
 
 import (
-	"github.com/wuxia-server/login/HttpRoute/Cmd"
+	"github.com/wuxia-server/login/Cmd"
 )
 
 /**

@@ -6,13 +6,13 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/team-zf/framework/dal"
 	"github.com/wuxia-server/login/Control"
-	"github.com/wuxia-server/login/Table"
+	"github.com/wuxia-server/login/DataTable"
 	"math/rand"
 	"time"
 )
 
-func GetAccountByToken(token string) (account *Table.Account) {
-	account = Table.NewAccount()
+func GetAccountByToken(token string) (account *DataTable.Account) {
+	account = DataTable.NewAccount()
 	sqlstr := dal.MarshalGetSql(account, "token")
 	row := Control.GateDB.QueryRow(sqlstr, token)
 	if row.Scan(
@@ -31,8 +31,8 @@ func GetAccountByToken(token string) (account *Table.Account) {
 	return
 }
 
-func GetAccountByUserName(userName string) (account *Table.Account) {
-	account = Table.NewAccount()
+func GetAccountByUserName(userName string) (account *DataTable.Account) {
+	account = DataTable.NewAccount()
 	sqlstr := dal.MarshalGetSql(account, "username")
 	row := Control.GateDB.QueryRow(sqlstr, userName)
 	if row.Scan(
@@ -51,7 +51,7 @@ func GetAccountByUserName(userName string) (account *Table.Account) {
 	return
 }
 
-func RefreshAccountToken(account *Table.Account) bool {
+func RefreshAccountToken(account *DataTable.Account) bool {
 	token, ok := GenerateToken()
 	if ok {
 		sqlstr := `update account set token = ? where username = ?;`
@@ -64,7 +64,7 @@ func RefreshAccountToken(account *Table.Account) bool {
 	return false
 }
 
-func RegisterAccount(account *Table.Account) (err error) {
+func RegisterAccount(account *DataTable.Account) (err error) {
 	sqlstr := `insert into account(id, username, password, email, phone, token, status, lately_server, create_time) values (?, ?, ?, ?, ?, ?, ?, ?, ?);`
 	_, err = Control.GateDB.Exec(sqlstr,
 		account.Id,

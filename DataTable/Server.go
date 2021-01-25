@@ -1,4 +1,4 @@
-package Table
+package DataTable
 
 import (
 	"github.com/team-zf/framework/dal"
